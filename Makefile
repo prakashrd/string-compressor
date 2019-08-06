@@ -1,17 +1,20 @@
-.PHONY: default build clean test package
-
-build:
-	sbt assembly:assembly
+build: docker-build
+	docker-compose run --rm app sbt assembly:assembly
 
 clean:
-	sbt clean
+	docker-compose run --rm app sbt clean
 
-compile:
-	sbt compile
+compile: docker-build
+	docker-compose run --rm app sbt compile
 
-test:
-	sbt test
+test: compile
+	docker-compose run --rm app sbt test
 
-package:
-	sbt package
+package: docker-build
+	docker-compose run --rm app sbt package
 
+#deploy: build
+#	./ops/deploy.sh
+
+docker-build:
+	docker-compose build app
